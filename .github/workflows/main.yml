@@ -20,6 +20,8 @@ jobs:
         run: 'echo ''New Version: ${{steps.bump.outputs.version}}'''
   build:
     needs: bump
+    outputs:
+      version: ${{  needs.bump.outputs.version }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Latest Commit
@@ -52,9 +54,9 @@ jobs:
       - uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: '${{ secrets.GITHUB_TOKEN }}'
-          automatic_release_tag: '${{ jobs.bump.outputs.version }}'
+          automatic_release_tag: '${{ needs.build.outputs.version }}'
           prerelease: false
-          title: 'Version: ${{ jobs.bump.outputs.version }}'
+          title: 'Version: ${{ needs.build.outputs.version }}'
           files: |
             **/MinecraftEmergency-*.jar
             README.md
