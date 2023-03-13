@@ -79,8 +79,8 @@ jobs:
       - name: Show all matching files
         run: |
           echo "${{ steps.glob.outputs.paths }}"
-      - name: ${{ steps.glob.outputs.paths }} MinecraftEmergency.jar
-        run: mv offfer offers
+      - name: Rename Jar
+        run: mv ${{ steps.glob.outputs.paths }} MinecraftEmergency.jar
       - name: Publish to pterodactyl
         uses: Avenze/pterodactyl-actions@master
         with:
