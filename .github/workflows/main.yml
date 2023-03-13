@@ -39,7 +39,7 @@ jobs:
           path: target/MinecraftEmergency-*.jar
   release:
     if: 'contains(github.event.head_commit.message, ''#'')'
-    needs: [build, bump]
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -52,9 +52,9 @@ jobs:
       - uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: '${{ secrets.GITHUB_TOKEN }}'
-          automatic_release_tag: '${{ needs.bump.outputs.version }}'
+          automatic_release_tag: '${{ needs.build.needs.bump.outputs.version }}'
           prerelease: false
-          title: 'Version: ${{ needs.bump.outputs.version }}'
+          title: 'Version: ${{ needs.build.needs.bump.outputs.version }}'
           files: |
             **/MinecraftEmergency-*.jar
             README.md
