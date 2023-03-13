@@ -1,146 +1,106 @@
 name: Master Build
-on:
-    push:
-        branches: [ master ]
+'on':
+  push:
+    branches:
+      - master
 jobs:
-    bump:
-        runs-on: ubuntu-latest
-        steps:
-            -   name: Checkout Latest Commit
-                uses: actions/checkout@v2
-
-            -   name: Bump Version
-                id: bump
-                uses: Plugily-Projects/version-bump-action@v6
-                with:
-                    github-token: ${{ secrets.github_token }}
-                    git-username: 'Maven-Version-Bot'
-                    auto-version-bump: true
-            -   name: Print Version
-                run: "echo 'New Version: ${{steps.bump.outputs.version}}'"
-                
-                
-    build:
-     needs: bump
-     runs-on: ubuntu-latest
-     steps:
-            - name: Checkout Latest Commit
-              uses: actions/checkout@v3
-              with:
-               ref: 'master'
-            - name: Set up JDK 19
-              uses: actions/setup-java@v1
-              with:
-               java-version: 19
-            - name: Build with Maven
-              run: mvn -B clean:clean package --file pom.xml
-            - run: mvn --batch-mode --update-snapshots verify
-            
-            - uses: actions/upload-artifact@v2
-              with:
-               name: jar
-               path: target/MinecraftEmergency-*.jar
-               
-    release:
-     if: "contains(github.event.head_commit.message, '#')"
-     needs: build
-     runs-on: ubuntu-latest
-
-     steps:
-     - uses: actions/checkout@v2
-     - uses: actions/download-artifact@v2
-       id: download
-       with:
-         name: jar
-     - name: Display structure of downloaded files
-       run: ls -R
-     
-     - uses: montudor/action-zip@v1
-       with:
-          args: unzip -qq ${{ steps.download.outputs.download-path }}
-         
-     - uses: "marvinpinto/action-automatic-releases@latest"
-       with:
-               repo_token: "${{ secrets.GITHUB_TOKEN }}"
-               automatic_release_tag: "${{ needs.bump.outputs.version }}"
-               prerelease: false
-               title: "Version: ${{ needs.bump.outputs.version }}"
-               files: |
-                **/MinecraftEmergency-*.jar
-                README.md
-     
-     - name: Glob match
-       uses: tj-actions/glob@v16
-       id: glob
-       with:
-         files: |
-          MinecraftEmergency-*.jar
-     - name: Show all matching files
-       run: |
-         echo "${{ steps.glob.outputs.paths }}"
-      
-     - name: Publish to pterodactyl
-       uses: Avenze/pterodactyl-actions@master
-       with:
-          panel: ${{ secrets.PANEL }}
-          api_key: ${{ secrets.API_KEY }}
-          server: ${{ secrets.SERVER }}
-          path: ${{ steps.glob.outputs.paths }}
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Latest Commit
+        uses: actions/checkout@v2
+      - name: Bump Version
+        id: bump
+        uses: Plugily-Projects/version-bump-action@v6
+        with:
+          github-token: '${{ secrets.github_token }}'
+          git-username: Maven-Version-Bot
+          auto-version-bump: true
+      - name: Print Version
+        run: 'echo ''New Version: ${{steps.bump.outputs.version}}'''
+  build:
+    needs: bump
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Latest Commit
+        uses: actions/checkout@v3
+        with:
+          ref: master
+      - name: Set up JDK 19
+        uses: actions/setup-java@v1
+        with:
+          java-version: 19
+      - name: Build with Maven
+        run: 'mvn -B clean:clean package --file pom.xml'
+      - run: mvn --batch-mode --update-snapshots verify
+      - uses: actions/upload-artifact@v2
+        with:
+          name: jar
+          path: target/MinecraftEmergency-*.jar
+  release:
+    if: 'contains(github.event.head_commit.message, ''#'')'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        id: download
+        with:
+          name: jar
+      - name: Display structure of downloaded files
+        run: ls -R
+      - uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          automatic_release_tag: '${{ needs.bump.outputs.version }}'
+          prerelease: false
+          title: 'Version: ${{ needs.bump.outputs.version }}'
+          files: |
+            **/MinecraftEmergency-*.jar
+            README.md
+      - name: Glob match
+        uses: tj-actions/glob@v16
+        id: glob
+        with:
+          files: |
+            MinecraftEmergency-*.jar
+      - name: Show all matching files
+        run: |
+          echo "${{ steps.glob.outputs.paths }}"
+      - name: Publish to pterodactyl
+        uses: Avenze/pterodactyl-actions@master
+        with:
+          panel: '${{ secrets.PANEL }}'
+          api_key: '${{ secrets.API_KEY }}'
+          server: '${{ secrets.SERVER }}'
+          path: '${{ steps.glob.outputs.paths }}'
           directory: /plugins
-      
-     - name: Pterodactyl Power Action
-      # You may pin to the exact commit or the version.
-      # uses: outsparkled/pterodactyl-power-action@4e6b7ae99e40640a4127b89b6b4daaca2795884a
-       uses: outsparkled/pterodactyl-power-action@v0.1.0
-       with:
-        # The URL of the panel
-        panel-url: ${{ secrets.PANEL }}
-        # The ID of the server you want to send a power action to
-        server-id: ${{ secrets.SERVER }}
-        # The bearer token to auth with, this will usually be your Pterodactyl API key
-        bearer-token: ${{ secrets.API_KEY }}
-        # The power action to send. Defaults to 'restart'
-        power-action: 'restart'
-
-    publish-pre:
-     needs: build
-     if: "!contains(github.event.head_commit.message, '#')"
-     runs-on: ubuntu-latest
-     steps:
-            - name: Checkout Latest Commit
-              uses: actions/checkout@v3
-              
-            - uses: actions/download-artifact@v2
-              id: download
-              with:
-                name: jar
-            - name: Display structure of downloaded files
-              run: ls -R
-     
-            - uses: montudor/action-zip@v1
-              with:
-                args: unzip -qq ${{ steps.download.outputs.download-path }}
-              
-            
-            - uses: "marvinpinto/action-automatic-releases@latest"
-              with:
-               repo_token: "${{ secrets.GITHUB_TOKEN }}"
-               automatic_release_tag: "latest"
-               prerelease: true
-               title: "Development Build"
-               files: |
-                **/MinecraftEmergency-*.jar
-                README.md
-#    test:
-#     needs: bump
-#     runs-on: ubuntu-latest
-#     steps:
-#     - uses: actions/checkout@v3
-#     - name: Set up JDK 19
-#       uses: actions/setup-java@v3
-#       with:
-#         java-version: '19'
-#         distribution: 'temurin'
-#         cache: maven
-#     - name: Build with Maven
-#       run: mvn -B test --file pom.xml
+      - name: Pterodactyl Power Action
+        uses: outsparkled/pterodactyl-power-action@v0.1.0
+        with:
+          panel-url: '${{ secrets.PANEL }}'
+          server-id: '${{ secrets.SERVER }}'
+          bearer-token: '${{ secrets.API_KEY }}'
+          power-action: restart
+  publish-pre:
+    needs: build
+    if: '!contains(github.event.head_commit.message, ''#'')'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Latest Commit
+        uses: actions/checkout@v3
+      - uses: actions/download-artifact@v2
+        id: download
+        with:
+          name: jar
+      - name: Display structure of downloaded files
+        run: ls -R
+      - uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          automatic_release_tag: latest
+          prerelease: true
+          title: Development Build
+          files: |
+            **/MinecraftEmergency-*.jar
+            README.md
