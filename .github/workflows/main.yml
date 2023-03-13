@@ -51,6 +51,10 @@ jobs:
      - uses: actions/download-artifact@v2
        with:
          name: jar
+     
+     - uses: montudor/action-zip@v1
+       with:
+          args: unzip -qq jar.zip
          
      - uses: "marvinpinto/action-automatic-releases@latest"
        with:
@@ -106,6 +110,9 @@ jobs:
             - uses: actions/download-artifact@v2
               with:
                name: jar
+            - uses: montudor/action-zip@v1
+              with:
+                args: unzip -qq jar.zip
               
             
             - uses: "marvinpinto/action-automatic-releases@latest"
