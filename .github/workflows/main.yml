@@ -45,7 +45,7 @@ jobs:
                prerelease: true
                title: "Development Build"
                files: |
-                MinecraftEmergency-*.jar
+                /target/MinecraftEmergency-*.jar
                 README.md
 #    test:
 #     needs: bump
