@@ -1,0 +1,4 @@
+name: MinecraftEmergency
+version: '${project.version}'
+main: de.wroracer.minecraftemergency.MinecraftEmergency
+api-version: 1.19
