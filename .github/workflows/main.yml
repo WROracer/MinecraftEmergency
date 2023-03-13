@@ -67,7 +67,7 @@ jobs:
         id: glob
         with:
           files: |
-            MinecraftEmergency-*.jar
+            *.jar
       - name: Show all matching files
         run: |
           echo "${{ steps.glob.outputs.paths }}"
