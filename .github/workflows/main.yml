@@ -6,6 +6,8 @@ name: Master Build
 jobs:
   bump:
     runs-on: ubuntu-latest
+    outputs:
+         version: ${{ steps.bump.outputs.version }}
     steps:
       - name: Checkout Latest Commit
         uses: actions/checkout@v2
