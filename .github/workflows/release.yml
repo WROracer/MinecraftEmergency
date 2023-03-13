@@ -53,7 +53,7 @@ jobs:
                prerelease: false
                title: "Version: ${{ needs.bump.outputs.version }}"
                files: |
-                MinecraftEmergency-*.jar
+                target/MinecraftEmergency-*.jar
                 README.md
     release:
     
