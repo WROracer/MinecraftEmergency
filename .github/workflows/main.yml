@@ -82,7 +82,7 @@ jobs:
           server-id: '${{ secrets.SERVER }}'
           bearer-token: '${{ secrets.API_KEY }}'
           power-action: restart
-  publish-pre:
+  prerelease:
     needs: build
     if: '!contains(github.event.head_commit.message, ''#'')'
     runs-on: ubuntu-latest
