@@ -83,7 +83,7 @@ jobs:
           panel: ${{ secrets.PANEL }}
           api_key: ${{ secrets.API_KEY }}
           server: ${{ secrets.SERVER }}
-          path: ${{ steps.glob.outputs.paths[0] }}
+          path: ${{ steps.glob.outputs.paths }}
           directory: /plugins
       
      - name: Pterodactyl Power Action
