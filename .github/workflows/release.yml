@@ -73,6 +73,9 @@ jobs:
          files: |
           MinecraftEmergency-*.jar
 
+     - name: Show all matching files
+       run: |
+         echo "${{ steps.glob.outputs.paths }}"
       
      - name: Publish to pterodactyl
        uses: Avenze/pterodactyl-actions@master
