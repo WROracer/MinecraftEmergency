@@ -39,7 +39,7 @@ jobs:
           path: target/MinecraftEmergency-*.jar
   release:
     if: 'contains(github.event.head_commit.message, ''#'')'
-    needs: build
+    needs: [build, bump]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
