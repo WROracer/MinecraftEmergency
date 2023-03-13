@@ -79,13 +79,15 @@ jobs:
       - name: Show all matching files
         run: |
           echo "${{ steps.glob.outputs.paths }}"
+      - name: ${{ steps.glob.outputs.paths }} MinecraftEmergency.jar
+        run: mv offfer offers
       - name: Publish to pterodactyl
         uses: Avenze/pterodactyl-actions@master
         with:
           panel: '${{ secrets.PANEL }}'
           api_key: '${{ secrets.API_KEY }}'
           server: '${{ secrets.SERVER }}'
-          path: '${{ steps.glob.outputs.paths }}'
+          path: 'MinecraftEmergency.jar'
           directory: /plugins
       - name: Pterodactyl Power Action
         uses: outsparkled/pterodactyl-power-action@v0.1.0
