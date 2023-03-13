@@ -65,6 +65,13 @@ jobs:
        with:
         latest: true
         fileName: "MinecraftEmergency-*.jar"
+        
+     - name: Glob match
+       uses: tj-actions/glob@v16
+       id: glob
+       with:
+         files: |
+          MinecraftEmergency-*.jar
 
       
      - name: Publish to pterodactyl
@@ -73,7 +80,7 @@ jobs:
           panel: ${{ secrets.PANEL }}
           api_key: ${{ secrets.API_KEY }}
           server: ${{ secrets.SERVER }}
-          path: MinecraftEmergency-*.jar
+          path: ${{ steps.glob.outputs.paths[0] }}
           directory: /plugins
       
      - name: Pterodactyl Power Action
