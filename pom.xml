@@ -6,7 +6,7 @@
 
     <groupId>de.wroracer</groupId>
     <artifactId>MinecraftEmergency</artifactId>
-    <version>0.0.5-dev0</version>
+    <version>0.0.5-dev1</version>
     <packaging>jar</packaging>
 
     <name>MinecraftEmergency</name>
