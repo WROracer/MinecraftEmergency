@@ -2,3 +2,11 @@ name: MinecraftEmergency
 version: '${project.version}'
 main: de.wroracer.minecraftemergency.MinecraftEmergency
 api-version: 1.19
+
+commands:
+  testnpc:
+    description: Testet das NPC-System
+    usage: /testnpc
+    permission: minecraftemergency.testnpc
+    permission-message: Du hast keine Berechtigung, diesen Befehl zu benutzen!
+    aliases: [tnpc]
